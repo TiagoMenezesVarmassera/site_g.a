@@ -1,0 +1,289 @@
+================================================================================
+                    DOCUMENTAÇÃO COMPLETA - PROJETO GERAÇÃO ALPHA
+================================================================================
+
+ VISÃO GERAL DO PROJETO
+================================================================================
+Nome: Geração Alpha - Site e painel ADM
+Tecnologia: Next.js 15 (App Router) + TypeScript + Prisma + MySQL
+
+================================================================================
+ESTRUTURA DE PASTAS PRINCIPAL
+================================================================================
+
+my-next-fullstack-app/
+├── 📁 src/                          # Código fonte principal (Next.js 13+)
+├── 📁 prisma/                       # Banco de dados e migrações
+├── 📁 public/                       # Arquivos estáticos (imagens, vídeos)
+├── 📁 scripts/                      # Scripts utilitários
+├── 📁 node_modules/                 # Dependências (gerado automaticamente)
+├── 📁 .next/                        # Build do Next.js (gerado automaticamente)
+├── 📁 .git/                         # Controle de versão Git
+├── 📄 package.json                  # Dependências e scripts do projeto
+├── 📄 tsconfig.json                 # Configuração TypeScript
+├── 📄 middleware.ts                 # Middleware principal do Next.js
+├── 📄 next.config.ts                # Configuração do Next.js
+├── 📄 tailwind.config.ts            # Configuração do Tailwind CSS
+├── 📄 .gitignore                    # Arquivos ignorados pelo Git
+└── 📄 README.md                     # Documentação básica
+
+================================================================================
+ESTRUTURA DETALHADA - SRC/
+================================================================================
+
+src/
+├── 📁 app/                          # Páginas e APIs (App Router)
+│   ├── 📁 admin-ga2025/             # 🔐 ÁREA ADMINISTRATIVA SECRETA
+│   ├── 📁 api/                      # APIs do backend
+│   ├── 📁 contato/                  # Página pública de contato
+│   ├── 📁 servicos/                 # Página de serviços
+│   ├── 📄 page.tsx                  # Página inicial (Home)
+│   ├── 📄 layout.tsx                # Layout principal
+│   ├── 📄 globals.css               # Estilos globais
+│   └── 📄 favicon.ico               # Ícone do site
+├── 📁 components/                   # Componentes React reutilizáveis
+├── 📁 lib/                          # Utilitários e configurações
+├── 📁 middleware/                   # Middlewares específicos
+└── 📁 generated/                    # Arquivos gerados (Prisma Client)
+
+================================================================================
+ROTAS PÚBLICAS DO SITE
+================================================================================
+
+PÁGINA INICIAL
+URL: http://localhost:3000/
+Arquivo: src/app/page.tsx
+Descrição: Landing page principal com informações sobre a Geração Alpha
+
+PÁGINA DE SERVIÇOS  
+URL: http://localhost:3000/servicos
+Arquivo: src/app/servicos/page.tsx
+Descrição: Detalhes dos serviços oferecidos (Escolas, Famílias, Clínicas)
+
+PÁGINA DE CONTATO
+URL: http://localhost:3000/contato
+Arquivo: src/app/contato/page.tsx
+Descrição: Formulário de contato que salva no banco de dados
+
+================================================================================
+AREA ADMINISTRATIVA SECRETA
+================================================================================
+
+⚠️  IMPORTANTE: Esta área é COMPLETAMENTE OCULTA dos usuários finais!
+
+LOGIN ADMINISTRATIVO
+URL: http://localhost:3000/admin-ga2025/login
+Arquivo: src/app/admin-ga2025/login/page.tsx
+Descrição: Página de login para administradores
+Credenciais Padrão:
+  - Email: admin@geracaoalpha.com
+  - Senha: admin123@GA2025
+
+DASHBOARD ADMINISTRATIVO
+URL: http://localhost:3000/admin-ga2025/dashboard
+Arquivo: src/app/admin-ga2025/dashboard/page.tsx
+Descrição: Painel principal com estatísticas dos contatos recebidos
+
+GERENCIAMENTO DE CONTATOS
+URL: http://localhost:3000/admin-ga2025/contatos
+Arquivo: src/app/admin-ga2025/contatos/page.tsx
+Descrição: Lista, visualiza e gerencia contatos do formulário público
+
+================================================================================
+APIs DO BACKEND
+================================================================================
+
+API DE CONTATO PÚBLICO
+URL: POST /api/contato
+Arquivo: src/app/api/contato/route.ts
+Função: Recebe formulários de contato e salva no banco
+
+API DE LOGIN ADMINISTRATIVO
+URL: POST /api/admin-ga2025/login
+URL: DELETE /api/admin-ga2025/login (logout)
+Arquivo: src/app/api/admin-ga2025/login/route.ts
+Função: Autenticação de administradores
+
+API DE ESTATÍSTICAS
+URL: GET /api/admin-ga2025/estatisticas
+Arquivo: src/app/api/admin-ga2025/estatisticas/route.ts
+Função: Fornece dados para o dashboard administrativo
+
+API DE GERENCIAMENTO DE CONTATOS
+URL: GET /api/admin-ga2025/contatos (listar)
+URL: DELETE /api/admin-ga2025/contatos?id=X (deletar)
+Arquivo: src/app/api/admin-ga2025/contatos/route.ts
+Função: CRUD de contatos para administradores
+
+================================================================================
+BANCO DE DADOS (MySQL + Prisma)
+================================================================================
+
+CONFIGURAÇÃO
+Arquivo: prisma/schema.prisma
+Provider: MySQL
+Cliente: Gerado em src/generated/prisma/
+
+TABELAS
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                               TABELA: User                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Campo     │ Tipo      │ Descrição                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ id        │ Int       │ ID único (auto incremento)                         │
+│ name      │ String    │ Nome do administrador                               │
+│ email     │ String    │ Email (único) - usado para login                   │
+│ password  │ String    │ Senha criptografada (bcrypt)                       │
+│ createdAt │ DateTime  │ Data de criação                                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                             TABELA: Contact                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ Campo     │ Tipo      │ Descrição                                           │
+├─────────────────────────────────────────────────────────────────────────────┤
+│ id        │ Int       │ ID único (auto incremento)                         │
+│ name      │ String    │ Nome da pessoa que entrou em contato               │
+│ email     │ String    │ Email de contato                                    │
+│ phone     │ String?   │ Telefone (opcional)                                 │
+│ message   │ String    │ Mensagem enviada                                    │
+│ createdAt │ DateTime  │ Data/hora do contato                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+SISTEMA DE SEGURANÇA
+================================================================================
+
+AUTENTICAÇÃO
+- JWT (JSON Web Tokens) para sessões
+- Cookies httpOnly para armazenar tokens
+- Middleware de proteção automática
+- Senhas criptografadas com bcryptjs
+
+MIDDLEWARE DE PROTEÇÃO
+Arquivo: src/middleware/admin.ts
+Função: Protege todas as rotas /admin-ga2025/* exceto /login
+Redirecionamento: Login automático se não autenticado
+
+ROTA SECRETA
+Padrão: /admin-ga2025/*
+Motivo: Completamente invisível aos usuários finais
+
+================================================================================
+COMPONENTES REUTILIZÁVEIS
+================================================================================
+
+📁 src/components/
+├── 📄 Header.tsx                    # Cabeçalho do site público
+├── 📄 SideMenu.tsx                  # Menu lateral
+├── 📄 Form.tsx                      # Componente de formulário
+├── 📄 Input.tsx                     # Campo de entrada
+└── 📄 Button.tsx                    # Botão estilizado
+
+================================================================================
+CONFIGURAÇÕES IMPORTANTES
+================================================================================
+
+VARIÁVEIS DE AMBIENTE (.env)
+DATABASE_URL=mysql://usuario:senha@localhost:3306/nome_banco
+JWT_SECRET=secret-key-admin-ga2025
+
+ALIASES DE IMPORTAÇÃO (tsconfig.json)
+@/* → src/*
+@/components/* → src/components/*
+@/lib/* → src/lib/*
+
+================================================================================
+SCRIPTS DISPONÍVEIS
+================================================================================
+
+DESENVOLVIMENTO
+npm run dev                          # Inicia servidor de desenvolvimento
+
+PRODUÇÃO
+npm run build                        # Gera build de produção
+npm start                            # Inicia servidor de produção
+
+UTILITÁRIOS
+npm run lint                         # Verifica código
+npm run create-admin                 # Cria usuário administrador
+
+================================================================================
+FLUXO DE FUNCIONAMENTO
+================================================================================
+
+USUÁRIOS PÚBLICOS:
+1. Acessam o site (/, /servicos, /contato)
+2. Preenchem formulário de contato
+3. Dados são salvos automaticamente no banco
+
+ADMINISTRADORES:
+1. Acessam URL secreta: /admin-ga2025/login
+2. Fazem login com credenciais
+3. Visualizam dashboard com estatísticas
+4. Gerenciam contatos recebidos
+5. Podem deletar contatos
+6. Fazem logout seguro
+
+================================================================================
+IDENTIDADE VISUAL
+================================================================================
+
+CORES PRINCIPAIS
+- Cyan: #67e8f9 (rgb(103, 232, 249))
+- Purple: #a78bfa (rgb(167, 139, 250))
+- Slate: #0f172a (rgb(15, 23, 42))
+
+EFEITOS VISUAIS
+- Gradientes cyan → purple
+- Backdrop blur (glassmorphism)
+- Animações suaves (Framer Motion)
+- Grid tecnológico de fundo
+
+================================================================================
+RESPONSIVIDADE
+================================================================================
+
+MOBILE FIRST
+- Design responsivo completo
+- Breakpoints: sm, md, lg, xl
+- Touch-friendly na área administrativa
+- Otimizado para todos os dispositivos
+
+================================================================================
+ATUALIZAÇÕES E MANUTENÇÃO
+================================================================================
+
+MONITORAMENTO
+- Logs de erro no console
+- Estatísticas de contatos
+- Controle de acesso administrativo
+
+MANUTENÇÃO
+- Backup regular do banco de dados
+- Atualização de dependências
+- Monitoramento de segurança
+
+================================================================================
+AVISOS IMPORTANTES
+================================================================================
+
+SEGURANÇA
+- NUNCA compartilhe a URL /admin-ga2025/ publicamente
+- SEMPRE altere a senha padrão após primeiro login
+- Mantenha o JWT_SECRET seguro
+- Faça backups regulares do banco
+
+ACESSO RESTRITO
+- Área administrativa é completamente oculta
+- Não há links públicos para área administrativa
+- Acesso apenas via URL direta
+
+================================================================================
+SUPORTE E CONTATO
+================================================================================
+
+================================================================================
+                              FIM DA DOCUMENTAÇÃO
+================================================================================ 
